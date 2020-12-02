@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
 /**
  * @author zero
@@ -17,7 +18,7 @@ public class PermissionUtils {
 
 
     /**
-     * 检查权限
+     * activity检查权限
      *
      * @param context
      * @param requestCode
@@ -41,4 +42,27 @@ public class PermissionUtils {
         }
     }
 
+    /**
+     * fragment检查权限
+     *
+     * @param context
+     * @param requestCode
+     * @param permission
+     * @return
+     */
+    public static boolean fragmentCheckPermissionFirst(Fragment context, int requestCode, String[] permission) {
+        List<String> permissions = new ArrayList<String>();
+        for (String per : permission) {
+            int permissionCode = ActivityCompat.checkSelfPermission(context.getContext(), per);
+            if (permissionCode != PackageManager.PERMISSION_GRANTED) {
+                permissions.add(per);
+            }
+        }
+        if (!permissions.isEmpty()) {
+            context.requestPermissions(permissions.toArray(new String[permissions.size()]), requestCode);
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
